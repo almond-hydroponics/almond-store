@@ -1,2 +1,0 @@
-# almond-store
-almond store

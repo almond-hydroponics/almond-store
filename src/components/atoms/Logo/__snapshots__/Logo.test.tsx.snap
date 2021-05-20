@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logo component should render correctly 1`] = `
+<DocumentFragment>
+  <div
+    class="makeStyles-logoContainer-1"
+    data-testid="logo"
+  >
+    <div
+      class="MuiGrid-root makeStyles-container-2 MuiGrid-container"
+    >
+      <img
+        alt="almond"
+        class="image makeStyles-root-4 makeStyles-logoImage-3"
+        src="https://static.almondhydroponics.com/static/logo.png"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
