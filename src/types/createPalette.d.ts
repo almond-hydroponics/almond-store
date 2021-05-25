@@ -14,7 +14,7 @@ declare module '@material-ui/core/styles/createPalette' {
 		cardShadow?: string;
 		alternate: {
 			main: string;
-			dark: string;
+			dark?: string;
 		};
 	}
 
@@ -22,7 +22,14 @@ declare module '@material-ui/core/styles/createPalette' {
 		cardShadow?: string;
 		alternate: {
 			main: string;
-			dark: string;
+			dark?: string;
 		};
+	}
+
+	interface PaletteColor {
+		light: string;
+		main: string;
+		dark?: string;
+		contrastText: string;
 	}
 }

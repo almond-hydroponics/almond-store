@@ -21,7 +21,7 @@ const Story = ({ className, ...rest }: ViewComponentProps): JSX.Element => {
 		<div className={className} {...rest}>
 			<Grid
 				container
-				justify="space-between"
+				justifyContent="space-between"
 				spacing={isMd ? 4 : 2}
 				direction={isMd ? 'row' : 'column-reverse'}
 			>
@@ -29,7 +29,7 @@ const Story = ({ className, ...rest }: ViewComponentProps): JSX.Element => {
 					item
 					container
 					alignItems="center"
-					justify="flex-start"
+					justifyContent="flex-start"
 					xs={12}
 					md={6}
 					data-aos="fade-up"
@@ -50,7 +50,7 @@ const Story = ({ className, ...rest }: ViewComponentProps): JSX.Element => {
 				<Grid
 					item
 					container
-					justify={isMd ? 'flex-end' : 'flex-start'}
+					justifyContent={isMd ? 'flex-end' : 'flex-start'}
 					alignItems="center"
 					xs={12}
 					md={6}

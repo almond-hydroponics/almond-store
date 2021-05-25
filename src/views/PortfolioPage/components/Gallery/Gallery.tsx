@@ -2,8 +2,8 @@ import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
 	useMediaQuery,
-	GridList,
-	GridListTile,
+	ImageList,
+	ImageListItem,
 	Typography,
 	Button,
 } from '@material-ui/core';
@@ -68,9 +68,9 @@ const Gallery = ({
 
 	return (
 		<div className={className} {...rest}>
-			<GridList cellHeight={isMd ? 360 : 260} cols={3} spacing={isMd ? 24 : 8}>
+			<ImageList rowHeight={isMd ? 360 : 260} cols={3} gap={isMd ? 24 : 8}>
 				{data.map((item: any, index: number) => (
-					<GridListTile key={index} cols={isMd ? item.cols : 3 || 1}>
+					<ImageListItem key={index} cols={isMd ? item.cols : 3 || 1}>
 						<div className={classes.folioItem} key={index}>
 							<Image
 								src={item.cover}
@@ -100,9 +100,9 @@ const Gallery = ({
 								</div>
 							</div>
 						</div>
-					</GridListTile>
+					</ImageListItem>
 				))}
-			</GridList>
+			</ImageList>
 		</div>
 	);
 };

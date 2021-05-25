@@ -1,7 +1,8 @@
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Toolbar } from '@material-ui/core';
 import { Image } from 'components/atoms';
+import Logo from '../../../../components/atoms/Logo';
 
 const useStyles = makeStyles((theme) => ({
 	toolbar: {
@@ -28,29 +29,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-	themeMode: string;
 	className?: string;
 }
 
-const Topbar = ({ themeMode, className, ...rest }: Props): JSX.Element => {
+const Topbar = ({ className, ...rest }: Props): JSX.Element => {
 	const classes = useStyles();
 
 	return (
 		<Toolbar className={clsx(classes.toolbar, className)} {...rest}>
-			<div className={classes.logoContainer}>
-				<a href="/" title="thefront">
-					<Image
-						className={classes.logoImage}
-						src={
-							themeMode === 'light'
-								? 'https://assets.maccarianagency.com/the-front/logos/logo.svg'
-								: 'https://assets.maccarianagency.com/the-front/logos/logo-negative.svg'
-						}
-						alt="thefront"
-						lazy={false}
-					/>
-				</a>
-			</div>
+				<Logo displayText />
 		</Toolbar>
 	);
 };

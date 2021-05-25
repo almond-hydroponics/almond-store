@@ -4,8 +4,21 @@
  * You may delete this file and its occurrences from the project filesystem if you are using GatsbyJS or react-scripts version
  */
 import React from 'react';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
 import Document, { Html, Head, Main, NextScript } from 'next/document';
-import { ServerStyleSheets } from '@material-ui/core/styles';
+import { ServerStyleSheets } from '@material-ui/styles';
+import createEmotionServer from '@emotion/server/create-instance';
+import { uuid } from 'uuidv4';
+
+const nonce = new Buffer(uuid()).toString('base64');
+
+const getCache = () => {
+	const cache = createCache({ key: 'css', prepend: true });
+	cache.compat = true;
+
+	return cache;
+};
 
 export default class MyDocument extends Document {
 	render() {
@@ -14,10 +27,11 @@ export default class MyDocument extends Document {
 				<Head>
 					<meta charSet="utf-8" />
 					<link rel="shortcut icon" href="/assets/favicon.ico" />
-					<meta name="theme-color" content="#ffffff" />
+					<meta name="theme-color" content="#000000" />
+					<meta name="author" content="Francis Masha" />
 					<meta
 						name="description"
-						content="A modern design system for your new landing and web pages."
+						content="Almond Hydroponics - Growing your plants smart."
 					/>
 					<meta
 						name="robots"
@@ -25,13 +39,13 @@ export default class MyDocument extends Document {
 					/>
 					<meta property="og:locale" content="en_US" />
 					<meta property="og:type" content="website" />
-					<meta
-						property="og:image"
-						content="https://thefront.maccarianagency.com/assets/social.png"
-					/>
+					{/*<meta*/}
+					{/*	property="og:image"*/}
+					{/*	content="https://thefront.maccarianagency.com/assets/social.png"*/}
+					{/*/>*/}
 					<meta
 						property="og:title"
-						content="theFront | UI Kit by Maccarian Agency."
+						content="almond store | Store for almond hydroponics."
 					/>
 					<meta
 						property="og:description"
@@ -39,15 +53,83 @@ export default class MyDocument extends Document {
 					/>
 					<meta
 						property="og:url"
-						content="https://thefront.maccarianagency.com/"
-					/>
-					<link
-						href="https://fonts.googleapis.com/css?family=Lato:100,100i,300,300i,400,400i,700,700i,900,900i&display=swap"
-						rel="stylesheet"
+						content="https://store.almondhydroponics.com/"
 					/>
 					<script
 						src="https://kit.fontawesome.com/4c273e6d43.js"
 						crossOrigin="anonymous"
+					/>
+
+					<link rel="shortcut icon" href="https://static.almondhydroponics.com/static/icons/favicon-96x96.png" type="image/x-icon" />
+					<link rel="icon" href="https://static.almondhydroponics.com/static/icons/favicon-96x96.png" type="image/x-icon" />
+					<link
+						rel="apple-touch-icon"
+						sizes="57x57"
+						href="https://static.almondhydroponics.com/static/icons/apple-icon-57x57.png"
+					/>
+					<link
+						rel="apple-touch-icon"
+						sizes="60x60"
+						href="https://static.almondhydroponics.com/static/icons/apple-icon-60x60.png"
+					/>
+					<link
+						rel="apple-touch-icon"
+						sizes="72x72"
+						href="https://static.almondhydroponics.com/static/icons/apple-icon-72x72.png"
+					/>
+					<link
+						rel="apple-touch-icon"
+						sizes="76x76"
+						href="https://static.almondhydroponics.com/static/icons/apple-icon-76x76.png"
+					/>
+					<link
+						rel="apple-touch-icon"
+						sizes="114x114"
+						href="https://static.almondhydroponics.com/static/icons/apple-icon-114x114.png"
+					/>
+					<link
+						rel="apple-touch-icon"
+						sizes="120x120"
+						href="https://static.almondhydroponics.com/static/icons/apple-icon-120x120.png"
+					/>
+					<link
+						rel="apple-touch-icon"
+						sizes="144x144"
+						href="https://static.almondhydroponics.com/static/icons/apple-icon-144x144.png"
+					/>
+					<link
+						rel="apple-touch-icon"
+						sizes="152x152"
+						href="https://static.almondhydroponics.com/static/icons/apple-icon-152x152.png"
+					/>
+					<link
+						rel="apple-touch-icon"
+						sizes="180x180"
+						href="https://static.almondhydroponics.com/static/icons/apple-icon-180x180.png"
+					/>
+					<link
+						rel="icon"
+						type="image/png"
+						sizes="192x192"
+						href="https://static.almondhydroponics.com/static/icons/android-icon-192x192.png"
+					/>
+					<link
+						rel="icon"
+						type="image/png"
+						sizes="32x32"
+						href="https://static.almondhydroponics.com/static/icons/favicon-32x32.png"
+					/>
+					<link
+						rel="icon"
+						type="image/png"
+						sizes="96x96"
+						href="https://static.almondhydroponics.com/static/icons/favicon-96x96.png"
+					/>
+					<link
+						rel="icon"
+						type="image/png"
+						sizes="16x16"
+						href="https://static.almondhydroponics.com/static/icons/favicon-16x16.png"
 					/>
 				</Head>
 				<body>
@@ -88,12 +170,32 @@ MyDocument.getInitialProps = async (ctx) => {
 	const sheets = new ServerStyleSheets();
 	const originalRenderPage = ctx.renderPage;
 
+	const cache = getCache();
+	const { extractCriticalToChunks } = createEmotionServer(cache);
+
 	ctx.renderPage = () =>
 		originalRenderPage({
 			enhanceApp: (App) => (props) => sheets.collect(<App {...props} />),
+			// Take precedence over the CacheProvider in our custom _app.js
+			enhanceComponent: (Component) => (props) =>
+				(
+					<CacheProvider value={cache}>
+						<Component {...props} />
+					</CacheProvider>
+				),
 		});
 
 	const initialProps = await Document.getInitialProps(ctx);
+	const emotionStyles = extractCriticalToChunks(initialProps.html);
+	const emotionStyleTags = emotionStyles.styles.map((style) => (
+		<style
+			data-emotion={`${style.key} ${style.ids.join(' ')}`}
+			key={style.key}
+			nonce={nonce}
+			// eslint-disable-next-line react/no-danger
+			dangerouslySetInnerHTML={{ __html: style.css }}
+		/>
+	));
 
 	return {
 		...initialProps,
@@ -101,6 +203,7 @@ MyDocument.getInitialProps = async (ctx) => {
 		styles: [
 			...React.Children.toArray(initialProps.styles),
 			sheets.getStyleElement(),
+			...emotionStyleTags,
 		],
 	};
 };

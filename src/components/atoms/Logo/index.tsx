@@ -1,7 +1,7 @@
 import { useHistory } from 'react-router-dom';
 import { Stack, Typography } from '@material-ui/core';
 import { Image } from 'components/atoms';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 
 const logo = 'https://static.almondhydroponics.com/static/logo.png';
 
@@ -36,16 +36,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface Props {
-	themeMode: string;
 	displayText?: boolean;
 }
 
 const Logo = ({
-	themeMode = 'light',
 	displayText = false,
 }: Props): JSX.Element => {
 	const classes = useStyles();
 	const history = useHistory();
+	const { palette: { mode } } = useTheme();
 	return (
 		<div
 			className={classes.logoContainer}
@@ -63,7 +62,7 @@ const Logo = ({
 			>
 				<Image
 					className={classes.logoImage}
-					src={themeMode === 'light' ? logo : logo}
+					src={mode === 'light' ? logo : logo}
 					alt="almond"
 					lazy={false}
 				/>

@@ -1,5 +1,5 @@
 // eslint-disable-next-line
-import { PaletteType } from '@material-ui/core';
+// import { PaletteMode } from '@material-ui/core';
 
 export const light = {
 	alternate: {
@@ -7,7 +7,7 @@ export const light = {
 		dark: '#e8eaf6',
 	},
 	cardShadow: 'rgba(23, 70, 161, .11)',
-	type: 'light' as PaletteType,
+	type: 'light',
 	primary: {
 		main: '#2573b5',
 		light: '#62a1e8',
@@ -16,10 +16,8 @@ export const light = {
 	},
 	secondary: {
 		main: '#00AB55',
-		lighter: '#C8FACD',
 		light: '#5BE584',
 		dark: '#007B55',
-		darker: '#005249',
 		contrastText: 'rgba(0, 0, 0, 0.87)',
 	},
 	text: {
@@ -46,7 +44,7 @@ export const dark = {
 		black: '#000',
 		white: '#fff',
 	},
-	type: 'dark' as PaletteType,
+	type: 'dark',
 	primary: {
 		main: '#90caf9',
 		light: 'rgb(166, 212, 250)',

@@ -33,14 +33,10 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
 	children: ReactNode;
-	themeToggler: Function;
-	themeMode: string;
 }
 
 const DocsLayout = ({
 	children,
-	themeToggler,
-	themeMode,
 }: Props): JSX.Element => {
 	const classes = useStyles();
 	const [isMobileNavOpen, setMobileNavOpen] = useState(false);
@@ -48,8 +44,6 @@ const DocsLayout = ({
 	return (
 		<div className={classes.root}>
 			<Topbar
-				themeMode={themeMode}
-				themeToggler={themeToggler}
 				onMobileNavOpen={() => setMobileNavOpen(true)}
 			/>
 			<Navbar

@@ -1,12 +1,10 @@
-import { useState } from 'react';
-import * as React from 'react';
+import { useState, MouseEvent } from 'react';
 import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 // import { NavLink } from 'react-router-dom';
 import Link from 'next/link';
 import {
 	Toolbar,
-	Hidden,
 	List,
 	ListItem,
 	ListItemIcon,
@@ -15,9 +13,9 @@ import {
 	IconButton,
 	Button,
 } from '@material-ui/core';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import MenuIcon from '@material-ui/icons/Menu';
 import { Image, DarkModeToggler } from 'components/atoms';
+import Logo from '../../../../components/atoms/Logo';
 
 const useStyles = makeStyles((theme) => ({
 	flexGrow: {
@@ -30,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	toolbar: {
 		zIndex: 999,
-		maxWidth: theme.layout.contentWidth,
+		maxWidth: '100%',
 		width: '100%',
 		margin: '0 auto',
 		padding: theme.spacing(0, 2),
@@ -120,13 +118,9 @@ interface Props {
 	className?: string;
 	onSidebarOpen: Function;
 	pages: PagesProps;
-	themeMode: string;
-	themeToggler: Function;
 }
 
 const Topbar = ({
-	themeMode,
-	themeToggler,
 	onSidebarOpen,
 	pages,
 	className,
@@ -134,11 +128,13 @@ const Topbar = ({
 }: Props): JSX.Element => {
 	const classes = useStyles();
 
+	const theme = useTheme();
+
 	const [anchorEl, setAnchorEl] = useState<any>(null);
 	const [openedPopoverId, setOpenedPopoverId] = useState<string | null>(null);
 
 	const handleClick = (
-		event: React.MouseEvent<HTMLElement>,
+		event: MouseEvent<HTMLElement>,
 		popoverId: string | null,
 	): void => {
 		setAnchorEl(event.target);
@@ -152,23 +148,9 @@ const Topbar = ({
 
 	return (
 		<Toolbar disableGutters className={classes.toolbar} {...rest}>
-			<div className={classes.logoContainer}>
-				<a href="/" title="thefront">
-					<Image
-						className={classes.logoImage}
-						src={
-							themeMode === 'light'
-								? 'https://assets.maccarianagency.com/the-front/logos/logo.svg'
-								: 'https://assets.maccarianagency.com/the-front/logos/logo-negative.svg'
-						}
-						alt="greenstar"
-						lazy={false}
-					/>
-				</a>
-			</div>
+			<Logo displayText />
 			<div className={classes.flexGrow} />
-			<Hidden smDown>
-				<List disablePadding className={classes.navigationContainer}>
+				<List disablePadding className={classes.navigationContainer} sx={{ display: { xl: 'none', xs: 'block' } }}>
 					<Link href="/home/" as="/home/">
 						<ListItem
 							aria-describedby="resources"
@@ -199,11 +181,8 @@ const Topbar = ({
 						</ListItem>
 					</Link>
 				</List>
-			</Hidden>
-			<Hidden mdUp>
 				<DarkModeToggler
-					themeMode={themeMode}
-					onClick={() => themeToggler()}
+					sx={{ display: { xl: 'none', xs: 'block' } }}
 				/>
 				<IconButton
 					className={classes.iconButton}
@@ -212,7 +191,6 @@ const Topbar = ({
 				>
 					<MenuIcon />
 				</IconButton>
-			</Hidden>
 		</Toolbar>
 	);
 };

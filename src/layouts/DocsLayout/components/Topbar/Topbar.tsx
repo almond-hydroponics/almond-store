@@ -2,7 +2,6 @@ import clsx from 'clsx';
 import {
 	AppBar,
 	Box,
-	Hidden,
 	IconButton,
 	Toolbar,
 	List,
@@ -10,8 +9,10 @@ import {
 	Button,
 	makeStyles,
 } from '@material-ui/core';
-import { Image, DarkModeToggler } from 'components/atoms';
+import { DarkModeToggler } from 'components/atoms';
 import MenuIcon from '@material-ui/icons/Menu';
+import Logo from '../../../../components/atoms/Logo';
+import { useTheme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
 	root: {
@@ -55,18 +56,15 @@ const useStyles = makeStyles((theme) => ({
 interface Props {
 	className?: string;
 	onMobileNavOpen: Function;
-	themeToggler: Function;
-	themeMode: string;
 }
 
 const TopBar = ({
 	className,
 	onMobileNavOpen,
-	themeToggler,
-	themeMode,
 	...rest
 }: Props): JSX.Element => {
 	const classes = useStyles();
+	const theme = useTheme();
 	return (
 		<AppBar
 			className={clsx(classes.root, className)}
@@ -76,26 +74,11 @@ const TopBar = ({
 		>
 			<Toolbar>
 				<div className={classes.logoContainer}>
-					<a href="/" title="thefront">
-						<Image
-							className={classes.logoImage}
-							src={
-								themeMode === 'light'
-									? 'https://assets.maccarianagency.com/the-front/logos/logo.svg'
-									: 'https://assets.maccarianagency.com/the-front/logos/logo-negative.svg'
-							}
-							alt="thefront"
-							lazy={false}
-						/>
-					</a>
+					<Logo displayText />
 				</div>
 				<Box flexGrow={1} />
-				<DarkModeToggler
-					themeMode={themeMode}
-					onClick={() => themeToggler()}
-				/>
-				<Hidden smDown>
-					<List disablePadding className={classes.navigationContainer}>
+				<DarkModeToggler />
+					<List disablePadding className={classes.navigationContainer} sx={{ display: { xl: 'none', xs: 'block' } }}>
 						<ListItem
 							className={clsx(classes.listItem, 'menu-item--no-dropdown')}
 						>
@@ -123,17 +106,15 @@ const TopBar = ({
 							</Button>
 						</ListItem>
 					</List>
-				</Hidden>
-				<Hidden mdUp>
 					<IconButton
 						onClick={() => onMobileNavOpen()}
 						className={classes.iconButton}
 						aria-label="Menu"
 						disableRipple
+						sx={{ display: { xl: 'none', xs: 'block' } }}
 					>
 						<MenuIcon />
 					</IconButton>
-				</Hidden>
 			</Toolbar>
 		</AppBar>
 	);

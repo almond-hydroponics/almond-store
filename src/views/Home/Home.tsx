@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
 	Divider,
 	Button,
@@ -5,6 +6,7 @@ import {
 	useTheme,
 	useMediaQuery,
 } from '@material-ui/core';
+import { NavigateNextRounded } from '@material-ui/icons';
 import { SectionHeader } from 'components/molecules';
 import { SectionAlternate } from 'components/organisms';
 import { Account, Landings, Pages, Hero } from './components';
@@ -34,16 +36,12 @@ const Home = ({ themeMode }): JSX.Element => {
 						titleVariant="h4"
 						titleProps={{ className: classes.fontWeight900 }}
 						ctaGroup={[
-							<Button
-								size="large"
-								component="a"
-								target="blank"
-								href="https://material-ui.com/store/items/the-front-landing-page/"
-								variant="contained"
-								color="primary"
-							>
+							<Link href="/e-commerce/" as="/home/">
+							<Button variant="contained">
 								Buy now
-							</Button>,
+								<NavigateNextRounded />
+							</Button>
+							</Link>
 						]}
 					/>
 					<Landings data={landings} themeMode={themeMode} />

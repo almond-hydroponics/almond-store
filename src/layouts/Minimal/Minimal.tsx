@@ -13,16 +13,15 @@ const useStyles = makeStyles(() => ({
 
 interface Props {
 	children: React.ReactNode;
-	themeMode: string;
 	className?: string;
 }
 
-const Minimal = ({ themeMode, children, className }: Props): JSX.Element => {
+const Minimal = ({  children, className }: Props): JSX.Element => {
 	const classes = useStyles();
 
 	return (
 		<div className={clsx(classes.root, className)}>
-			<Topbar themeMode={themeMode} />
+			<Topbar />
 			<Divider />
 			<main className={classes.content}>{children}</main>
 		</div>

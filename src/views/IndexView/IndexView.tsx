@@ -4,7 +4,6 @@ import {
 	GetStarted,
 	Features,
 	Reviews,
-	QuickStart,
 	Services,
 	Hero,
 } from './components';
@@ -28,9 +27,6 @@ const IndexView = ({ themeMode }) => {
 		<div>
 			<Hero themeMode={themeMode} />
 			<Services />
-			<SectionAlternate className={classes.sectionAlternateNoPaddingTop}>
-				<QuickStart />
-			</SectionAlternate>
 			<SectionAlternate>
 				<Features />
 			</SectionAlternate>

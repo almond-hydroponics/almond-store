@@ -13,11 +13,9 @@ const useStyles = makeStyles((theme) => ({
 
 interface Props {
 	children: React.ReactNode;
-	themeToggler: Function;
-	themeMode: string;
 }
 
-const Main = ({ children, themeToggler, themeMode }: Props): JSX.Element => {
+const Main = ({ children }: Props): JSX.Element => {
 	const classes = useStyles();
 
 	const theme = useTheme();
@@ -94,8 +92,6 @@ const Main = ({ children, themeToggler, themeMode }: Props): JSX.Element => {
 			<Topbar
 				onSidebarOpen={handleSidebarOpen}
 				pages={pages}
-				themeMode={themeMode}
-				themeToggler={themeToggler}
 			/>
 			<Sidebar
 				onClose={handleSidebarClose}

@@ -5,6 +5,9 @@
  */
 import React from 'react';
 import Head from 'next/head';
+import { CacheProvider } from '@emotion/react';
+import createCache from '@emotion/cache';
+import { AppProps } from 'next/app';
 
 import 'react-lazy-load-image-component/src/effects/opacity.css';
 import 'leaflet/dist/leaflet.css';
@@ -13,21 +16,19 @@ import 'assets/css/fonts.css';
 import 'swiper/swiper-bundle.css';
 import 'aos/dist/aos.css';
 
-interface AppProps {
-	Component: any;
-	pageProps: any;
-}
+export const cache = createCache({ key: 'css', prepend: true });
 
 export default function App({ Component, pageProps }: AppProps): JSX.Element {
 	return (
-		<>
+		<CacheProvider value={cache}>
 			<Head>
+				<title>almond store</title>
 				<meta
 					name="viewport"
 					content="width=device-width, initial-scale=1, shrink-to-fit=no"
 				/>
 			</Head>
 			<Component {...pageProps} />
-		</>
+		</CacheProvider>
 	);
 }

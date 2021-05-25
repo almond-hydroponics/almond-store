@@ -1,37 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { ThemeProvider } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import React, { useEffect, createContext, useMemo, useState } from 'react';
+import { PaletteMode, Paper, StyledEngineProvider, ThemeProvider } from '@material-ui/core';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import getTheme from 'theme';
-
 import AOS from 'aos';
 
-export const useDarkMode = () => {
-	const [themeMode, setTheme] = useState('light');
-	const [mountedComponent, setMountedComponent] = useState(false);
-
-	const setMode = (mode) => {
-		window.localStorage.setItem('themeMode', mode);
-		setTheme(mode);
-	};
-
-	const themeToggler = () => {
-		themeMode === 'light' ? setMode('dark') : setMode('light');
-	};
-
-	useEffect(() => {
-		const localTheme = window.localStorage.getItem('themeMode');
-		localTheme ? setTheme(localTheme) : setMode('light');
-		setMountedComponent(true);
-		AOS.refresh();
-	}, []);
-
-	useEffect(() => {
-		AOS.refresh();
-	}, [themeMode]);
-
-	return [themeMode, themeToggler, mountedComponent];
-};
+export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
 interface Props {
 	layout: any;
@@ -45,7 +18,9 @@ export default function WithLayout({
 	layout: Layout,
 	...rest
 }: Props): JSX.Element {
-	React.useEffect(() => {
+	const [mode, setMode] = useState<'light' | 'dark'>('light');
+
+	useEffect(() => {
 		// Remove the server-side injected CSS.
 		const jssStyles = document.querySelector('#jss-server-side');
 		if (jssStyles) {
@@ -60,20 +35,38 @@ export default function WithLayout({
 		});
 	}, []);
 
-	const [themeMode, themeToggler, mountedComponent] = useDarkMode();
 	useEffect(() => {
 		AOS.refresh();
-	}, [mountedComponent]);
+	}, []);
+
+	const colorMode = useMemo(
+		() => ({
+			toggleColorMode: () => {
+				setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+			},
+		}),
+		[],
+	);
+
+	const theme = useMemo(
+		() =>
+			getTheme(mode),
+		[mode]
+	);
 
 	return (
-		<ThemeProvider theme={getTheme(themeMode)}>
+		<StyledEngineProvider injectFirst>
+			<ColorModeContext.Provider value={colorMode}>
+		<ThemeProvider theme={theme}>
 			{/* CssBaseline kickstart an elegant, consistent, and simple baseline to build upon. */}
 			<CssBaseline />
 			<Paper elevation={0}>
-				<Layout themeMode={themeMode} themeToggler={themeToggler}>
-					<Component themeMode={themeMode} {...rest} />
+				<Layout>
+					<Component {...rest} />
 				</Layout>
 			</Paper>
 		</ThemeProvider>
+			</ColorModeContext.Provider>
+		</StyledEngineProvider>
 	);
 }
