@@ -38,7 +38,7 @@ COPY . .
 RUN yarn build
 
 # Stage 2 - the production environment
-FROM nginx:1.17-alpine
+FROM nginx:1.21.4-alpine
 
 RUN apk --no-cache add curl
 RUN curl -L https://github.com/a8m/envsubst/releases/download/v1.1.0/envsubst-`uname -s`-`uname -m` -o envsubst && \
