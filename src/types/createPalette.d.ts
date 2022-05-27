@@ -1,20 +1,22 @@
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import * as createPalette from '@material-ui/core/styles/createPalette';
+import * as createPalette from '@mui/material/styles/createPalette';
 
-declare module '@material-ui/core/styles/createPalette' {
+declare module '@mui/material/styles/createPalette' {
 	interface TypeBackground {
 		paper: string;
 		default: string;
 		level2: string;
 		level1: string;
+		level3: string;
 		footer: string;
+		contrast: string;
 	}
 
 	interface PaletteOptions {
 		cardShadow?: string;
 		alternate: {
 			main: string;
-			dark?: string;
+			dark: string;
 		};
 	}
 
@@ -22,14 +24,7 @@ declare module '@material-ui/core/styles/createPalette' {
 		cardShadow?: string;
 		alternate: {
 			main: string;
-			dark?: string;
+			dark: string;
 		};
-	}
-
-	interface PaletteColor {
-		light: string;
-		main: string;
-		dark?: string;
-		contrastText: string;
 	}
 }

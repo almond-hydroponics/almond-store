@@ -1,78 +1,59 @@
-import { useHistory } from 'react-router-dom';
-import { Stack, Typography } from '@material-ui/core';
-import { Image } from 'components/atoms';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { useRouter } from 'next/router';
+import { Stack, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
 
-const logo = 'https://static.almondhydroponics.com/static/logo.png';
-
-const useStyles = makeStyles((theme) => ({
-	logoContainer: {
-		cursor: 'pointer',
-		// width: '10%',
-		// height: '10%',
-		// [theme.breakpoints.up('md')]: {
-		// 	width: '3%',
-		// 	height: '3%',
-		// },
-	},
-	container: {
-		maxWidth: 'fit-content',
-	},
-	logoImage: {
-		// width: '60%',
-		// height: '60%',
-		width: '3%',
-		height: '3%',
-		margin: 0,
-		minWidth: 32,
-		// fontWeight: theme.typography.fontWeightMedium,
-		// fontSize: '13px',
-		// marginRight: theme.spacing(4),
-		// [theme.breakpoints.up('md')]: {
-		// 	width: '60%',
-		// 	height: '60%',
-		// },
-	},
-}));
+const darkLogo = '/logo.png';
+const logo = '/logo.png';
 
 interface Props {
 	displayText?: boolean;
+	colorInvert?: boolean;
 }
 
 const Logo = ({
 	displayText = false,
+	colorInvert = false,
 }: Props): JSX.Element => {
-	const classes = useStyles();
-	const history = useHistory();
-	const { palette: { mode } } = useTheme();
+	const router = useRouter();
+	const {
+		palette: { mode },
+	} = useTheme();
+
 	return (
 		<div
-			className={classes.logoContainer}
 			data-testid="logo"
-			onClick={() => history.push('/')}
-			onKeyDown={() => history.push('/')}
+			onClick={() => router.push('/')}
+			onKeyDown={() => router.push('/')}
 			role="presentation"
+			style={{ cursor: 'pointer' }}
 		>
 			<Stack
 				direction="row"
 				justifyContent="flex-start"
 				alignItems="center"
-				spacing={0.5}
-				className={classes.container}
+				spacing={1}
 			>
-				<Image
-					className={classes.logoImage}
-					src={mode === 'light' ? logo : logo}
-					alt="almond"
-					lazy={false}
-				/>
+				<Box display={'flex'} title="almond" width={{ xs: 30, md: 36 }}>
+					<Box
+						component={'img'}
+						src={mode === 'light' ? logo : darkLogo}
+						alt="logo"
+						height={1}
+						width={1}
+					/>
+				</Box>
 				{displayText && (
 					<Typography
 						variant="h5"
-						color="textPrimary"
-						style={{ fontWeight: 600, fontSize: '16px', padding: '8px' }}
+						// color="textPrimary"
+						style={{
+							fontWeight: 600,
+							fontSize: '1.45rem',
+							color: colorInvert ? 'common.white' : 'text.primary',
+						}}
 					>
-						Almond
+						almond
 					</Typography>
 				)}
 			</Stack>

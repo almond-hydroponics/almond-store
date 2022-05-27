@@ -1,52 +1,45 @@
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import { Drawer } from '@material-ui/core';
-
+import Drawer from '@mui/material/Drawer';
+import Box from '@mui/material/Box';
 import { SidebarNav } from './components';
 
-const useStyles = makeStyles((theme) => ({
-	drawer: {
-		width: '100%',
-		maxWidth: 325,
-	},
-	root: {
-		height: '100%',
-		padding: theme.spacing(1),
-	},
-	nav: {
-		marginBottom: theme.spacing(1),
-	},
-}));
-
 interface Props {
-	className?: string;
-	onClose: Function;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	onClose: () => void;
 	open: boolean;
 	variant: 'permanent' | 'persistent' | 'temporary' | undefined;
-	pages: PagesProps;
+	handleContactModal: () => void;
 }
 
 const Sidebar = ({
-	pages,
 	open,
 	variant,
 	onClose,
-	className,
-	...rest
+	handleContactModal,
 }: Props): JSX.Element => {
-	const classes = useStyles();
-
 	return (
 		<Drawer
 			anchor="left"
-			classes={{ paper: classes.drawer }}
 			onClose={() => onClose()}
 			open={open}
 			variant={variant}
+			sx={{
+				'& .MuiPaper-root': {
+					width: '100%',
+					maxWidth: { xs: '100%', sm: 400 },
+				},
+			}}
 		>
-			<div {...rest} className={clsx(classes.root, className)}>
-				<SidebarNav className={classes.nav} pages={pages} onClose={onClose} />
-			</div>
+			<Box
+				sx={{
+					height: '100%',
+					padding: 1,
+				}}
+			>
+				<SidebarNav
+					handleContactModal={handleContactModal}
+					onClose={onClose}
+				/>
+			</Box>
 		</Drawer>
 	);
 };

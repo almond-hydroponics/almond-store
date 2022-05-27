@@ -10,3 +10,6 @@
 *.ico   -text
 *.png   -text
 *.ttf   -text
+*.jpeg   -text
+*.webp   -text
+*.txt   -text

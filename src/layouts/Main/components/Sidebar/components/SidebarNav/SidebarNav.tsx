@@ -1,186 +1,138 @@
-/* eslint-disable react/no-multi-comp */
-/* eslint-disable react/display-name */
-import clsx from 'clsx';
-import { makeStyles } from '@material-ui/core/styles';
-import {
-	List,
-	ListItem,
-	Typography,
-	ListItemIcon,
-	Divider,
-	Button,
-} from '@material-ui/core';
-import CloseIcon from '@material-ui/icons/Close';
+import Box from '@mui/material/Box';
+import Divider from '@mui/material/Divider';
+import Button from '@mui/material/Button';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
-const useStyles = makeStyles((theme) => ({
-	root: {},
-	listItem: {
-		flexDirection: 'column',
-		alignItems: 'flex-start',
-	},
-	navLink: {
-		'&:hover': {
-			color: theme.palette.primary.dark,
-		},
-	},
-	listItemIcon: {
-		minWidth: 'auto',
-	},
-	closeIcon: {
-		justifyContent: 'flex-end',
-		cursor: 'pointer',
-	},
-	menu: {
-		display: 'flex',
-	},
-	menuItem: {
-		marginRight: theme.spacing(8),
-		'&:last-child': {
-			marginRight: 0,
-		},
-	},
-	menuGroupItem: {
-		paddingTop: 0,
-	},
-	menuGroupTitle: {
-		textTransform: 'uppercase',
-	},
-	divider: {
-		width: '100%',
-	},
-}));
+import NavItem from './components/NavItem';
+import pages from '../../../../../navigation';
+import { useRouter } from 'next/router';
+import authService from '@utils/auth';
+import Modal from '../../../../../../components/atoms/Modal';
+import { Form } from '../../../Topbar/components';
+import { useState } from 'react';
+import Container from '@components/Container';
+import { Stack, Typography } from '@mui/material';
+import { AccountCircleTwoTone, ArrowBack } from '@mui/icons-material';
 
 interface Props {
-	className?: string;
-	onClose: Function;
-	pages: PagesProps;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	onClose: () => void;
+	handleContactModal: () => void;
 }
 
-const SidebarNav = ({
-	pages,
-	onClose,
-	className,
-	...rest
-}: Props): JSX.Element => {
-	const classes = useStyles();
+const SidebarNav = ({ onClose, handleContactModal }: Props): JSX.Element => {
+	const router = useRouter();
+	const [openAuthModal, setAuthModalOpen] = useState<boolean>(false);
+	const [authByEmail, setAuthByEmail] = useState<boolean>(false);
 
-	const { discover, learn, support } = pages;
+	const handleAuthModal = () => {
+		setAuthModalOpen((prevState) => !prevState);
+		authByEmail && setAuthByEmail(false);
+	};
+	const handleAuthByEmail = () => setAuthByEmail((prevState) => !prevState);
 
-	const MenuGroup = ({ item }: MenuGroupProps): JSX.Element => (
-		<List disablePadding>
-			<ListItem disableGutters>
-				<Typography
-					variant="body2"
-					color="primary"
-					className={classes.menuGroupTitle}
-				>
-					{item.groupTitle}
-				</Typography>
-			</ListItem>
-			{item.pages.map((page, i) => (
-				<ListItem disableGutters key={i} className={classes.menuGroupItem}>
-					<Typography
-						variant="body2"
-						component="a"
-						href={page.href}
-						className={clsx(classes.navLink, 'submenu-item')}
-						color="textPrimary"
-						onClick={() => onClose()}
-					>
-						{page.title}
-					</Typography>
-				</ListItem>
-			))}
-		</List>
+	const renderAuthButtons = () => (
+		<Box>
+			<Button
+				fullWidth
+				variant="outlined"
+				color="primary"
+				size="medium"
+				onClick={handleAuthModal}
+			>
+				{authService.isAuthenticated() ? 'Logout' : 'Account'}
+			</Button>
+		</Box>
 	);
 
-	const DiscoverPages = (): JSX.Element => {
-		const { about } = discover.children;
-		return (
-			<div className={classes.menu}>
-				<div>
-					<MenuGroup item={about} />
-				</div>
-			</div>
-		);
-	};
+	const renderModalHeader = (): JSX.Element => (
+		<Stack
+			direction="row"
+			justifyContent="flex-start"
+			alignItems="center"
+			spacing={2}
+		>
+			{authByEmail ? (
+				<ArrowBack onClick={handleAuthByEmail} />
+			) : (
+				<AccountCircleTwoTone />
+			)}
+			<Typography variant="h6">Login into your account</Typography>
+		</Stack>
+	);
 
-	const LearnPages = (): JSX.Element => {
-		const { resources } = learn.children;
-		return (
-			<div className={classes.menu}>
-				<div>
-					<MenuGroup item={resources} />
-				</div>
-			</div>
-		);
-	};
-
-	const SupportPages = (): JSX.Element => {
-		const { services } = support.children;
-		return (
-			<div className={classes.menu}>
-				<div>
-					<MenuGroup item={services} />
-				</div>
-			</div>
-		);
-	};
+	const renderAuthModal = (): JSX.Element => (
+		<Modal
+			isModalOpen={openAuthModal}
+			renderHeader="Login into your account"
+			renderDialogText="Choose your preferred method to authenticate into your account"
+			renderContent={
+				<Form
+					handleAuthModal={handleAuthModal}
+					authByEmail={authByEmail}
+					handleAuthByEmail={handleAuthByEmail}
+				/>
+			}
+			onClose={handleAuthModal}
+			onDismiss={handleAuthModal}
+		/>
+	);
 
 	return (
-		<List {...rest} className={clsx(classes.root, className)}>
-			<ListItem className={classes.closeIcon} onClick={() => onClose()}>
-				<ListItemIcon className={classes.listItemIcon}>
+		<Box>
+			<Box
+				display={'flex'}
+				justifyContent={'flex-end'}
+				onClick={() => onClose()}
+			>
+				<IconButton>
 					<CloseIcon fontSize="small" />
-				</ListItemIcon>
-			</ListItem>
-			<ListItem className={classes.listItem}>
-				<Typography variant="h6" color="textPrimary" gutterBottom>
-					Landings
-				</Typography>
-				<DiscoverPages />
-			</ListItem>
-			<ListItem className={classes.listItem}>
-				<Divider className={classes.divider} />
-			</ListItem>
-			<ListItem className={classes.listItem}>
-				<Typography variant="h6" color="textPrimary" gutterBottom>
-					Pages
-				</Typography>
-				<LearnPages />
-			</ListItem>
-			<ListItem className={classes.listItem}>
-				<Divider className={classes.divider} />
-			</ListItem>
-			<ListItem className={classes.listItem}>
-				<Typography variant="h6" color="textPrimary" gutterBottom>
-					Account
-				</Typography>
-				<SupportPages />
-			</ListItem>
-			<ListItem className={classes.listItem}>
-				<Button
-					variant="outlined"
-					fullWidth
-					component="a"
-					href="/documentation"
+				</IconButton>
+			</Box>
+			<Box paddingX={2} paddingBottom={2}>
+				<Box>
+					<NavItem
+						title={'Landings'}
+						items={pages}
+						handleContactModal={handleContactModal}
+					/>
+				</Box>
+				<Divider sx={{ marginBottom: 2 }} />
+				{renderAuthButtons()}
+				<Box marginTop={2}>
+					<Button
+						variant="contained"
+						color="primary"
+						fullWidth
+						component="a"
+						target="blank"
+						onClick={() => router.push('/store')}
+					>
+						Go to store
+					</Button>
+				</Box>
+				{renderAuthModal()}
+			</Box>
+			<Container paddingY={2} sx={{ bottom: 0, position: 'fixed' }}>
+				<Stack
+					direction="row"
+					alignItems="center"
+					justifyContent="space-between"
+					spacing={2}
 				>
-					Documentation
-				</Button>
-			</ListItem>
-			<ListItem className={classes.listItem}>
-				<Button
-					variant="contained"
-					color="primary"
-					fullWidth
-					component="a"
-					target="blank"
-					href="https://material-ui.com/store/items/the-front-landing-page/"
-				>
-					Buy Now
-				</Button>
-			</ListItem>
-		</List>
+					<Typography
+						variant={'body2'}
+						onClick={() => router.push('company-terms')}
+					>
+						Legal
+					</Typography>
+					<Typography variant={'caption'} fontSize={10} fontWeight={300}>
+						v1.01.123
+					</Typography>
+				</Stack>
+			</Container>
+		</Box>
 	);
 };
 

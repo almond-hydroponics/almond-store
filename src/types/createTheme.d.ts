@@ -1,15 +1,12 @@
-import { Theme, ThemeOptions } from '@material-ui/core/styles/createMuiTheme';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { Theme, ThemeOptions } from '@mui/material/styles/createTheme';
 
-declare module '@material-ui/core/styles/createTheme' {
+declare module '@mui/material/styles/createTheme' {
 	interface Theme {
-		layout: {
-			contentWidth: number | string;
-		};
+		themeToggler: () => void;
 	}
-	// allow configuration using `createMuiTheme`
+	// allow configuration using `createTheme`
 	interface ThemeOptions {
-		layout?: {
-			contentWidth: number | string;
-		};
+		themeToggler?: () => void;
 	}
 }

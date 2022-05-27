@@ -1,4 +1,4 @@
-interface FormStateProps {
+export interface FormStateProps {
 	isValid: boolean;
 	values: any;
 	touched: any;

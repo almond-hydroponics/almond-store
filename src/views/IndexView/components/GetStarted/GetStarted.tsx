@@ -1,46 +1,72 @@
-import { makeStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
-import { SectionHeader } from 'components/molecules';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
 
-const useStyles = makeStyles(() => ({
-	fontWeight900: {
-		fontWeight: 900,
-	},
-}));
+const GetStarted = (): JSX.Element => {
+	const theme = useTheme();
+	const isMd = useMediaQuery(theme.breakpoints.up('md'), {
+		defaultMatches: true,
+	});
 
-const GetStarted = ({
-	className,
-	...rest
-}: ViewComponentProps): JSX.Element => {
-	const classes = useStyles();
-	const title = 'Get started with theFront today';
-	const subtitle =
-		'Build a beautiful, modern website with flexible, fully customizable, atomic Material UI components.';
-	const button = (
-		<Button
-			size="large"
-			variant="contained"
-			color="primary"
-			component="a"
-			href="/home"
-		>
-			Get started
-		</Button>
-	);
 	return (
-		<div className={className} {...rest}>
-			<SectionHeader
-				title={title}
-				subtitle={subtitle}
-				align="center"
-				titleProps={{
-					variant: 'h2',
-					color: 'textPrimary',
-					className: classes.fontWeight900,
+		<Box>
+			<Typography
+				variant="h4"
+				color="text.primary"
+				align={'center'}
+				gutterBottom
+				sx={{
+					fontWeight: 700,
 				}}
-				ctaGroup={[button]}
-			/>
-		</div>
+			>
+				Get started with almond today
+			</Typography>
+			<Typography
+				variant="h6"
+				component="p"
+				color="text.secondary"
+				sx={{ fontWeight: 400 }}
+				align={'center'}
+			>
+				Take control of your food and what you eat
+			</Typography>
+			<Box
+				display="flex"
+				flexDirection={{ xs: 'column', sm: 'row' }}
+				alignItems={{ xs: 'stretched', sm: 'flex-start' }}
+				justifyContent={'center'}
+				marginTop={4}
+			>
+				<Button
+					component={'a'}
+					variant="contained"
+					color="primary"
+					size="large"
+					fullWidth={!isMd}
+					href={'/home'}
+				>
+					View store
+				</Button>
+				<Box
+					marginTop={{ xs: 2, sm: 0 }}
+					marginLeft={{ sm: 2 }}
+					width={{ xs: '100%', md: 'auto' }}
+				>
+					<Button
+						component={'a'}
+						href={'/docs/introduction'}
+						variant="outlined"
+						color="primary"
+						size="large"
+						fullWidth={!isMd}
+					>
+						Resources
+					</Button>
+				</Box>
+			</Box>
+		</Box>
 	);
 };
 

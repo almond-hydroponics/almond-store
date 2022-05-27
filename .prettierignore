@@ -3,12 +3,11 @@
 \.build
 \.cache
 \.editorconfig
-\.env
+.env.local
 \.git
 \.gitignore
 \.ignore
 \.prettierignore
-\.reports
 node_modules
-package.json
-yarn.lock
+#package.json
+\.next

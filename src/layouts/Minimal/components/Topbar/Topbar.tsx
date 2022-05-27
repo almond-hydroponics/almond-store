@@ -1,44 +1,47 @@
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Toolbar } from '@material-ui/core';
-import { Image } from 'components/atoms';
-import Logo from '../../../../components/atoms/Logo';
+import Link from 'next/link';
+import Box from '@mui/material/Box';
+import { useTheme } from '@mui/material/styles';
+// components
+import { ArrowBackRounded } from '@mui/icons-material';
+import { useRouter } from 'next/router';
+import { IconButton, Typography } from '@mui/material';
+import CustomAvatar from '@components/molecules/CustomAvatar';
 
-const useStyles = makeStyles((theme) => ({
-	toolbar: {
-		maxWidth: theme.layout.contentWidth,
-		width: '100%',
-		margin: '0 auto',
-		padding: theme.spacing(0, 2),
-		[theme.breakpoints.up('sm')]: {
-			padding: theme.spacing(0, 8),
-		},
-	},
-	logoContainer: {
-		width: 100,
-		height: 28,
-		[theme.breakpoints.up('md')]: {
-			width: 120,
-			height: 32,
-		},
-	},
-	logoImage: {
-		width: '100%',
-		height: '100%',
-	},
-}));
-
-interface Props {
-	className?: string;
-}
-
-const Topbar = ({ className, ...rest }: Props): JSX.Element => {
-	const classes = useStyles();
+const Topbar = (): JSX.Element => {
+	const router = useRouter();
+	const theme = useTheme();
 
 	return (
-		<Toolbar className={clsx(classes.toolbar, className)} {...rest}>
-				<Logo displayText />
-		</Toolbar>
+		<Box
+			display={'flex'}
+			justifyContent={'space-between'}
+			alignItems={'center'}
+		>
+			<Link
+				href={router.pathname === '/account' ? '/dashboard' : '/'}
+				passHref
+			>
+				<Box sx={{ display: 'flex' }} alignItems={'center'}>
+					<IconButton
+						style={{ padding: 0, marginRight: theme.spacing(1) }}
+						color="primary"
+					>
+						<ArrowBackRounded className="learn-more-link__arrow" />
+					</IconButton>
+					<Typography
+						fontWeight={500}
+						variant="body1"
+						color="primary"
+						sx={{ cursor: 'pointer' }}
+					>
+						{router.pathname === '/account' ? 'back' : 'home'}
+					</Typography>
+				</Box>
+			</Link>
+			<Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+				<CustomAvatar />
+			</Box>
+		</Box>
 	);
 };
 

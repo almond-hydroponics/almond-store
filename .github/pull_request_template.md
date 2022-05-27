@@ -1,9 +1,7 @@
 #### Description
-
 n/a
 
 #### Type of change
-
 <pre>
 + Added something.
 - Removed something.

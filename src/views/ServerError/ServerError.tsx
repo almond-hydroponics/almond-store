@@ -1,81 +1,101 @@
-import { makeStyles } from '@material-ui/core/styles';
-import { Button } from '@material-ui/core';
-import { LearnMoreLink } from 'components/atoms';
-import { SectionHeader } from 'components/molecules';
-import { Section } from 'components/organisms';
-
-const useStyles = makeStyles((theme) => {
-	const toolbar = theme.mixins.toolbar as any;
-
-	return {
-		formContainer: {
-			height: '100%',
-			display: 'flex',
-			flexDirection: 'column',
-			alignItems: 'center',
-			justifyContent: 'center',
-			minHeight: `calc(100vh - ${toolbar['@media (min-width:600px)'].minHeight}px)`,
-			maxWidth: 500,
-			margin: `0 auto`,
-		},
-		section: {
-			paddingTop: 0,
-			paddingBottom: 0,
-		},
-		label: {
-			fontWeight: 'bold',
-			textTransform: 'uppercase',
-		},
-	};
-});
+import Main from 'layouts/Main';
+import Container from 'components/Container';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import Link from '@mui/material/Link';
+import Button from '@mui/material/Button';
 
 const ServerError = (): JSX.Element => {
-	const classes = useStyles();
-
-	const handleClick = (): void => {
-		window.history.back();
-	};
+	const theme = useTheme();
+	const isMd = useMediaQuery(theme.breakpoints.up('md'), {
+		defaultMatches: true,
+	});
 
 	return (
-		<div>
-			<Section className={classes.section}>
-				<div className={classes.formContainer}>
-					<SectionHeader
-						label="500"
-						title="Internal Server Error"
-						subtitle={
-							<span>
-								There’s nothing here, but if you feel this is an error please{' '}
-								<LearnMoreLink
-									title="let us know"
-									href="#"
-									typographyProps={{ variant: 'h6' }}
+		<Main>
+			<Box
+				bgcolor={theme.palette.alternate.main}
+				position={'relative'}
+				minHeight={'calc(100vh - 247px)'}
+				display={'flex'}
+				alignItems={'center'}
+				justifyContent={'center'}
+				height={1}
+			>
+				<Container>
+					<Grid container>
+						<Grid
+							item
+							container
+							alignItems={'center'}
+							justifyContent={'center'}
+							xs={12}
+							md={6}
+						>
+							<Box>
+								<Typography
+									variant="h1"
+									component={'h1'}
+									align={isMd ? 'left' : 'center'}
+									sx={{ fontWeight: 700 }}
+								>
+									500
+								</Typography>
+								<Typography
+									variant="h6"
+									component="p"
+									color="text.secondary"
+									align={isMd ? 'left' : 'center'}
+								>
+									We are experiencing an internal server problem. Please try
+									again later or <br />
+									If you think this is a problem with us, please{' '}
+									<Link href="mailto:almond.froyo@gmail.com" underline="none">
+										tell us
+									</Link>
+								</Typography>
+								<Box
+									marginTop={4}
+									display={'flex'}
+									justifyContent={{ xs: 'center', md: 'flex-start' }}
+								>
+									<Button
+										component={Link}
+										variant="contained"
+										color="primary"
+										size="large"
+										href={'/'}
+									>
+										Back home
+									</Button>
+								</Box>
+							</Box>
+						</Grid>
+						<Grid item container justifyContent={'center'} xs={12} md={6}>
+							<Box height={1} width={1} maxWidth={500}>
+								<Box
+									component={'img'}
+									src={
+										'https://storage.googleapis.com/static.almondhydroponics.com/static/images/illustration_500.svg'
+									}
+									width={1}
+									height={1}
+									sx={{
+										filter:
+											theme.palette.mode === 'dark'
+												? 'brightness(0.8)'
+												: 'none',
+									}}
 								/>
-							</span>
-						}
-						titleProps={{
-							variant: 'h3',
-						}}
-						labelProps={{
-							color: 'secondary',
-							className: classes.label,
-							variant: 'h5',
-						}}
-						ctaGroup={[
-							<Button
-								size="large"
-								variant="contained"
-								color="primary"
-								onClick={handleClick}
-							>
-								Go Back
-							</Button>,
-						]}
-						disableGutter
-					/>
-				</div>
-			</Section>
-		</div>
+							</Box>
+						</Grid>
+					</Grid>
+				</Container>
+			</Box>
+		</Main>
 	);
 };
 

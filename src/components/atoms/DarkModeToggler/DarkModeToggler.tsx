@@ -1,169 +1,65 @@
-import {
-	useState,
-	useEffect,
-	useMemo,
-	CSSProperties,
-	HTMLAttributes,
-	useContext,
-} from 'react';
-import { useSpring, animated } from 'react-spring';
-import { DarkModeTogglerProps } from 'components/atoms/DarkModeToggler/interfaces';
-import { ColorModeContext } from '../../../WithLayout';
-import { useTheme } from '@material-ui/core/styles';
+import { DarkModeTogglerProps } from './interfaces';
+import { alpha, useTheme } from '@mui/material/styles';
+import { Button } from '@mui/material';
 
-export const defaultProperties = {
-	dark: {
-		circle: {
-			r: 9,
-		},
-		mask: {
-			cx: '50%',
-			cy: '23%',
-		},
-		svg: {
-			transform: 'rotate(40deg)',
-		},
-		lines: {
-			opacity: 0,
-		},
-	},
-	light: {
-		circle: {
-			r: 5,
-		},
-		mask: {
-			cx: '100%',
-			cy: '0%',
-		},
-		svg: {
-			transform: 'rotate(90deg)',
-		},
-		lines: {
-			opacity: 1,
-		},
-	},
-	springConfig: { mass: 4, tension: 250, friction: 35 },
-};
-
-let REACT_TOGGLE_DARK_MODE_GLOBAL_ID = 0;
-
-type SVGProps = Omit<HTMLAttributes<HTMLOrSVGElement>, 'onChange'>;
-interface Props extends SVGProps {
-	onChange: (checked: boolean) => void;
-	checked: boolean;
-	style?: CSSProperties;
-	size?: number;
-	animationProperties?: typeof defaultProperties;
-	moonColor?: string;
-	sunColor?: string;
-}
-/**
- * Component to display the dark mode toggler
- *
- * @param {Object} props
- */
 const DarkModeToggler = ({
-	children,
-	size = 24,
-	animationProperties = defaultProperties,
+	size = 20,
 	moonColor = 'white',
 	sunColor = 'black',
 	style,
-	className,
 	...rest
 }: DarkModeTogglerProps): JSX.Element => {
-	const [id, setId] = useState(0);
-
-	const colorMode = useContext(ColorModeContext);
-	const { palette: { mode } } = useTheme();
-
-	useEffect(() => {
-		REACT_TOGGLE_DARK_MODE_GLOBAL_ID += 1;
-		setId(REACT_TOGGLE_DARK_MODE_GLOBAL_ID);
-	}, [setId]);
-
-	const properties = useMemo(() => {
-		if (animationProperties !== defaultProperties) {
-			return Object.assign(defaultProperties, animationProperties);
-		}
-
-		return animationProperties;
-	}, [animationProperties]);
-
-	const { circle, svg, lines, mask } = properties[
-		mode === 'dark' ? 'dark' : 'light'
-	];
-
-	const svgContainerProps = useSpring({
-		...svg,
-		config: animationProperties.springConfig,
-	});
-	const centerCircleProps = useSpring({
-		...circle,
-		config: animationProperties.springConfig,
-	});
-	const maskedCircleProps = useSpring({
-		...mask,
-		config: animationProperties.springConfig,
-	});
-	const linesProps = useSpring({
-		...lines,
-		config: animationProperties.springConfig,
-	});
-
-	const toggle = () => {
-		colorMode.toggleColorMode()
-	};
-
-	const uniqueMaskId = `circle-mask-${id}`;
+	const theme = useTheme();
+	const { themeToggler } = theme;
+	const { mode } = theme.palette;
 
 	return (
-		<animated.svg
-			xmlns="http://www.w3.org/2000/svg"
-			width={size}
-			height={size}
-			viewBox="0 0 24 24"
-			color={mode === 'dark' ? moonColor : sunColor}
-			fill="none"
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-			stroke="currentColor"
-			onClick={toggle}
-			style={{
-				cursor: 'pointer',
-				...svgContainerProps,
-				...style,
+		<Button
+			variant={'outlined'}
+			onClick={() => themeToggler()}
+			aria-label="Dark mode toggler"
+			color={mode === 'light' ? 'primary' : 'secondary'}
+			sx={{
+				borderRadius: 1,
+				minWidth: 'auto',
+				padding: 0.5,
+				borderColor: alpha(theme.palette.divider, 0.2),
 			}}
-			{...rest}
 		>
-			<mask id={uniqueMaskId}>
-				<rect x="0" y="0" width="100%" height="100%" fill="white" />
-				{/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-				{/* @ts-ignore */}
-				<animated.circle style={maskedCircleProps} r="9" fill="black" />
-			</mask>
-
-			<animated.circle
-				cx="12"
-				cy="12"
-				fill={mode === 'dark' ? moonColor : sunColor}
-				// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-				// @ts-ignore
-				style={centerCircleProps}
-				mask={`url(#${uniqueMaskId})`}
-			/>
-			<animated.g stroke="currentColor" style={linesProps}>
-				<line x1="12" y1="1" x2="12" y2="3" />
-				<line x1="12" y1="21" x2="12" y2="23" />
-				<line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
-				<line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
-				<line x1="1" y1="12" x2="3" y2="12" />
-				<line x1="21" y1="12" x2="23" y2="12" />
-				<line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
-				<line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
-			</animated.g>
-		</animated.svg>
+			{mode === 'light' ? (
+				<svg
+					width={size}
+					height={size}
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+					/>
+				</svg>
+			) : (
+				<svg
+					width={size}
+					height={size}
+					xmlns="http://www.w3.org/2000/svg"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke="currentColor"
+				>
+					<path
+						strokeLinecap="round"
+						strokeLinejoin="round"
+						strokeWidth={2}
+						d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+					/>
+				</svg>
+			)}
+		</Button>
 	);
 };
 

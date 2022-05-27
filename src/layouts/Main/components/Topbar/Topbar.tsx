@@ -1,197 +1,238 @@
-import { useState, MouseEvent } from 'react';
-import clsx from 'clsx';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-// import { NavLink } from 'react-router-dom';
 import Link from 'next/link';
+import { alpha, useTheme } from '@mui/material/styles';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { useSession } from 'next-auth/react';
+// components
+import { DarkModeToggler } from '@components/atoms';
+import authService from '@utils/auth';
+import CustomAvatar from '@components/molecules/CustomAvatar';
+import Logo from '@components/atoms/Logo';
 import {
-	Toolbar,
-	List,
-	ListItem,
-	ListItemIcon,
-	Popover,
-	Typography,
-	IconButton,
-	Button,
-} from '@material-ui/core';
-import MenuIcon from '@material-ui/icons/Menu';
-import { Image, DarkModeToggler } from 'components/atoms';
-import Logo from '../../../../components/atoms/Logo';
-
-const useStyles = makeStyles((theme) => ({
-	flexGrow: {
-		flexGrow: 1,
-	},
-	navigationContainer: {
-		display: 'flex',
-		justifyContent: 'space-between',
-		alignItems: 'center',
-	},
-	toolbar: {
-		zIndex: 999,
-		maxWidth: '100%',
-		width: '100%',
-		margin: '0 auto',
-		padding: theme.spacing(0, 2),
-		[theme.breakpoints.up('sm')]: {
-			padding: theme.spacing(0, 8),
-		},
-	},
-	navLink: {
-		'&:hover': {
-			color: theme.palette.primary.dark,
-		},
-	},
-	listItem: {
-		cursor: 'pointer',
-		'&:hover > .menu-item, &:hover svg': {
-			color: theme.palette.primary.dark,
-		},
-		'&.menu-item--no-dropdown': {
-			paddingRight: 0,
-		},
-	},
-	listItemActive: {
-		'&> .menu-item': {
-			color: theme.palette.primary.dark,
-		},
-	},
-	listItemText: {
-		flex: '0 0 auto',
-		marginRight: theme.spacing(2),
-		whiteSpace: 'nowrap',
-	},
-	listItemButton: {
-		whiteSpace: 'nowrap',
-	},
-	listItemIcon: {
-		minWidth: 'auto',
-	},
-	popover: {
-		padding: theme.spacing(4),
-		border: theme.spacing(2),
-		boxShadow: '0 0.5rem 2rem 2px rgba(116, 123, 144, 0.09)',
-		minWidth: 350,
-		marginTop: theme.spacing(2),
-	},
-	iconButton: {
-		marginLeft: theme.spacing(2),
-		padding: 0,
-		'&:hover': {
-			background: 'transparent',
-		},
-	},
-	expandOpen: {
-		transform: 'rotate(180deg)',
-		color: theme.palette.primary.dark,
-	},
-	logoContainer: {
-		width: 100,
-		height: 28,
-		[theme.breakpoints.up('md')]: {
-			width: 120,
-			height: 32,
-		},
-	},
-	logoImage: {
-		width: '100%',
-		height: '100%',
-	},
-	menu: {
-		display: 'flex',
-		justifyContent: 'space-between',
-	},
-	menuItem: {
-		marginRight: theme.spacing(5),
-		'&:last-child': {
-			marginRight: 0,
-		},
-	},
-	menuGroupItem: {
-		paddingTop: 0,
-	},
-	menuGroupTitle: {
-		textTransform: 'uppercase',
-	},
-}));
+	AccountCircleOutlined,
+	AccountCircleTwoTone,
+	ArrowBack,
+	ShortTextRounded,
+} from '@mui/icons-material';
+import Modal from '@components/atoms/Modal';
+import { useState } from 'react';
+import { Form } from './components';
 
 interface Props {
-	className?: string;
-	onSidebarOpen: Function;
-	pages: PagesProps;
+	// eslint-disable-next-line @typescript-eslint/ban-types
+	onSidebarOpen: () => void;
+	handleContactModal: () => void;
+	colorInvert?: boolean;
 }
 
 const Topbar = ({
 	onSidebarOpen,
-	pages,
-	className,
-	...rest
+	handleContactModal,
+	colorInvert = false,
 }: Props): JSX.Element => {
-	const classes = useStyles();
-
+	const [openAuthModal, setAuthModalOpen] = useState<boolean>(false);
+	const [authByEmail, setAuthByEmail] = useState<boolean>(false);
 	const theme = useTheme();
+	const { data: session } = useSession();
+	const linkColor = colorInvert ? 'common.white' : 'text.primary';
 
-	const [anchorEl, setAnchorEl] = useState<any>(null);
-	const [openedPopoverId, setOpenedPopoverId] = useState<string | null>(null);
-
-	const handleClick = (
-		event: MouseEvent<HTMLElement>,
-		popoverId: string | null,
-	): void => {
-		setAnchorEl(event.target);
-		setOpenedPopoverId(popoverId);
+	const handleAuthModal = () => {
+		setAuthModalOpen((prevState) => !prevState);
+		authByEmail && setAuthByEmail(false);
 	};
+	const handleAuthByEmail = () => setAuthByEmail((prevState) => !prevState);
 
-	const handleClose = (): void => {
-		setAnchorEl(null);
-		setOpenedPopoverId(null);
-	};
+	const renderAuthButtons = () => (
+		<>
+			<Box marginLeft={3}>
+				{!!session ? (
+					<CustomAvatar />
+				) : (
+					<Button
+						variant="outlined"
+						color="primary"
+						size="small"
+						onClick={handleAuthModal}
+						startIcon={
+							<AccountCircleOutlined
+								sx={{
+									color: colorInvert ? 'common.white' : 'primary.dark',
+									'&:hover': {
+										color: colorInvert ? 'common.white' : 'primary.dark',
+									},
+								}}
+							/>
+						}
+						sx={{
+							color: linkColor,
+							'&:hover': {
+								color: colorInvert ? 'common.white' : 'primary.dark',
+							},
+						}}
+					>
+						Account
+					</Button>
+				)}
+			</Box>
+		</>
+	);
+
+	const renderModalHeader = (): JSX.Element => (
+		<Stack
+			direction="row"
+			justifyContent="flex-start"
+			alignItems="center"
+			spacing={2}
+		>
+			{authByEmail ? (
+				<ArrowBack onClick={handleAuthByEmail} />
+			) : (
+				<AccountCircleTwoTone />
+			)}
+			<Typography variant="h6">Login into your account</Typography>
+		</Stack>
+	);
+
+	const renderAuthModal = (): JSX.Element => (
+		<Modal
+			maxWidth="xs"
+			isModalOpen={openAuthModal}
+			renderHeader={renderModalHeader()}
+			renderDialogText={
+				authByEmail ? '' : 'Choose your preferred method to authenticate'
+			}
+			renderContent={
+				<Form
+					handleAuthModal={handleAuthModal}
+					authByEmail={authByEmail}
+					handleAuthByEmail={handleAuthByEmail}
+				/>
+			}
+			onClose={handleAuthModal}
+			onDismiss={handleAuthModal}
+		/>
+	);
 
 	return (
-		<Toolbar disableGutters className={classes.toolbar} {...rest}>
-			<Logo displayText />
-			<div className={classes.flexGrow} />
-				<List disablePadding className={classes.navigationContainer} sx={{ display: { xl: 'none', xs: 'block' } }}>
-					<Link href="/home/" as="/home/">
-						<ListItem
-							aria-describedby="resources"
-							className={clsx(classes.listItem)}
+		<Box
+			display={'flex'}
+			justifyContent={'space-between'}
+			alignItems={'center'}
+			width={1}
+		>
+			<Box sx={{ display: { xs: 'flex', md: 'none' } }} alignItems={'center'}>
+				<Logo />
+			</Box>
+			<Box sx={{ display: { xs: 'none', md: 'flex' } }} alignItems={'center'}>
+				<Logo />
+				<Box marginLeft={3}>
+					<Link href="/resources" passHref>
+						<Button
+							sx={{
+								color: linkColor,
+								'&:hover': {
+									color: colorInvert ? 'common.white' : 'primary.dark',
+								},
+							}}
+							variant="text"
 						>
-							<Typography
-								variant="body1"
-								color="textPrimary"
-								className={clsx(classes.listItemText, 'menu-item')}
-							>
-								Resources
-							</Typography>
-						</ListItem>
+							Resources
+						</Button>
 					</Link>
+				</Box>
 
-					<Link href="/home/" as="/home/">
-						<ListItem
-							aria-describedby="shop"
-							className={clsx(classes.listItem)}
+				<Box marginLeft={3}>
+					<Link href="/store" passHref>
+						<Button
+							sx={{
+								color: linkColor,
+								'&:hover': {
+									color: colorInvert ? 'common.white' : 'primary.dark',
+								},
+							}}
+							variant="text"
 						>
-							<Typography
-								variant="body1"
-								color="textPrimary"
-								className={clsx(classes.listItemText, 'menu-item')}
-							>
-								Shop
-							</Typography>
-						</ListItem>
+							Store
+						</Button>
 					</Link>
-				</List>
+				</Box>
+
+				<Box marginLeft={3}>
+					<Link href="/blog" passHref>
+						<Button
+							sx={{
+								color: linkColor,
+								'&:hover': {
+									color: colorInvert ? 'common.white' : 'primary.dark',
+								},
+							}}
+							variant="text"
+						>
+							Latest news
+						</Button>
+					</Link>
+				</Box>
+
+				<Box marginLeft={3}>
+					<Button
+						sx={{
+							color: linkColor,
+							'&:hover': {
+								color: colorInvert ? 'common.white' : 'primary.dark',
+							},
+						}}
+						variant="text"
+						onClick={handleContactModal}
+					>
+						Contact us
+					</Button>
+				</Box>
+			</Box>
+
+			<Box sx={{ display: { xs: 'none', md: 'flex' } }} alignItems={'center'}>
+				<Box marginLeft={3}>
+					<DarkModeToggler
+						moonColor={
+							colorInvert
+								? theme.palette.common.white
+								: theme.palette.secondary.main
+						}
+						sunColor={
+							colorInvert
+								? theme.palette.common.white
+								: theme.palette.secondary.main
+						}
+					/>
+				</Box>
+				{renderAuthButtons()}
+			</Box>
+
+			<Box sx={{ display: { xs: 'flex', md: 'none' } }} alignItems={'center'}>
 				<DarkModeToggler
-					sx={{ display: { xl: 'none', xs: 'block' } }}
+					moonColor={theme.palette.secondary.main}
+					sunColor={theme.palette.primary.main}
 				/>
-				<IconButton
-					className={classes.iconButton}
+				<Button
 					onClick={() => onSidebarOpen()}
 					aria-label="Menu"
+					variant={'outlined'}
+					size={'small'}
+					sx={{
+						color: linkColor,
+						'&:hover': {
+							color: colorInvert ? 'common.white' : 'primary.dark',
+						},
+						borderRadius: 1,
+						minWidth: 'auto',
+						// padding: 1,
+						marginLeft: 2,
+						// borderColor: alpha(theme.palette.divider, 0.2),
+					}}
 				>
-					<MenuIcon />
-				</IconButton>
-		</Toolbar>
+					<ShortTextRounded fontSize={'small'} />
+				</Button>
+			</Box>
+			{renderAuthModal()}
+		</Box>
 	);
 };
 

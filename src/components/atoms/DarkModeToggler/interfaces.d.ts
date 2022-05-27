@@ -1,6 +1,5 @@
-import { CSSProperties, HTMLAttributes } from 'react';
-import { defaultProperties } from 'components/atoms/DarkModeToggler/DarkModeToggler';
-import { PaletteMode } from '@material-ui/core';
+import { HTMLAttributes, CSSProperties } from 'react';
+import { defaultProperties } from '@components/atoms/DarkModeToggler/DarkModeToggler';
 
 type SVGProps = Omit<HTMLAttributes<HTMLOrSVGElement>, 'onChange'>;
 export interface DarkModeTogglerProps extends SVGProps {
@@ -8,14 +7,6 @@ export interface DarkModeTogglerProps extends SVGProps {
 	 * External classes
 	 */
 	className?: string;
-	/**
-	 * The theme mode
-	 */
-	// themeMode: PaletteMode;
-	/**
-	 * Theme toggler function
-	 */
-	// onChange: (event: any) => void;
 	/**
 	 * Color of the icon
 	 */
