@@ -1,5 +1,5 @@
 # Install dependencies only when needed
-FROM node:alpine AS builder
+FROM node:21.2-alpine3.18 AS builder
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 # set labels
 LABEL maintainer="Francis Masha" MAINTAINER="Francis Masha <francismasha96@gmail.com>"
@@ -11,7 +11,7 @@ RUN yarn install --immutable
 RUN yarn build
 
 # Production image, copy all the files and run next
-FROM node:alpine AS runner
+FROM node:21.2-alpine3.18 AS runner
 WORKDIR /app
 ENV NODE_ENV production
 
